@@ -3,7 +3,6 @@
 #include <QTimer>
 #include "grey_image_window.h"
 #include <QObject>
-
 #ifdef FAKE_POINTCLOUD
 #include "fake_point_cloud_viewer.h"
 #endif
