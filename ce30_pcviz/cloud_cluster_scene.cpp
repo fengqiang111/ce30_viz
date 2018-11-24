@@ -35,7 +35,7 @@ void CloudClusterScene::Update()
     CloudScene::Update();
 }
 
-/**点云聚类
+/**点云聚类，使用欧氏距离提取点云
   *@param cloud_rgb: 一帧点云数据，类型pcl::PointCloud<pcl::PointXYZRGB>
   *@return none
   */
@@ -63,7 +63,7 @@ void CloudClusterScene::DrawClusterFrame(
     pcl::EuclideanClusterExtraction<pcl::PointXYZ> ec;
     ec.setClusterTolerance (0.4);
     ec.setMinClusterSize (10);
-    ec.setMaxClusterSize (100000);
+    ec.setMaxClusterSize (6400);
     ec.setSearchMethod (tree);
     ec.setInputCloud (cloud_filtered);
     ec.extract (cluster_indices);
