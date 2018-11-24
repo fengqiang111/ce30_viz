@@ -8,13 +8,13 @@
 class FakePointCloudViewer : public QObject
 {
 public:
-  FakePointCloudViewer();
+    FakePointCloudViewer();
 protected:
-  void timerEvent(QTimerEvent* event);
+    void timerEvent(QTimerEvent* event);
 private:
-  void ExecuteCycle();
-  int timer_id_;
-  ce30_pcviz::PointCloudViz viz_;
+    void ExecuteCycle();
+    int timer_id_;
+    ce30_pcviz::PointCloudViz viz_;
 };
 
 #endif // FAKE_POINT_CLOUD_VIEWER_H

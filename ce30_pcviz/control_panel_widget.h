@@ -4,21 +4,23 @@
 #include "control_panel_base.h"
 #include <QWidget>
 
-namespace Ui {
-  class ControlPanelWidget;
+namespace Ui
+{
+class ControlPanelWidget;
 }
 
-namespace ce30_pcviz {
+namespace ce30_pcviz
+{
 class API ControlPanelWidget : public ControlPanelBase
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  explicit ControlPanelWidget(QWidget *parent = 0);
-  ~ControlPanelWidget();
+    explicit ControlPanelWidget(QWidget *parent = 0);
+    ~ControlPanelWidget();
 
 private:
-  Ui::ControlPanelWidget *ui;
+    Ui::ControlPanelWidget *ui;
 };
 } // namespace ce30_pcviz
 

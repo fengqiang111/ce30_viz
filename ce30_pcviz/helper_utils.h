@@ -3,7 +3,8 @@
 
 #include <string>
 
-namespace ce30_pcviz {
+namespace ce30_pcviz
+{
 std::string ToCoordinateString(const float& x, const float& y, const float& z);
 } // namespace
 

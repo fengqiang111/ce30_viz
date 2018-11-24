@@ -8,24 +8,26 @@
 #include <string>
 #include <QGridLayout>
 
-namespace ce30_pcviz {
-class API ControlPanelBase : public QWidget {
-  Q_OBJECT
- public:
-  ControlPanelBase(QWidget *parent = 0);
-  virtual ~ControlPanelBase();
-  static void ClearGridLayout(QLayout* layout);
-  void AppendWidget(QWidget* widget);
-  void AppendWidgets(const std::vector<QWidget*>& widgets);
-  QWidget* Widget();
+namespace ce30_pcviz
+{
+class API ControlPanelBase : public QWidget
+{
+    Q_OBJECT
+public:
+    ControlPanelBase(QWidget *parent = 0);
+    virtual ~ControlPanelBase();
+    static void ClearGridLayout(QLayout* layout);
+    void AppendWidget(QWidget* widget);
+    void AppendWidgets(const std::vector<QWidget*>& widgets);
+    QWidget* Widget();
 public slots:
-  void OnShow(std::vector<ce30_pcviz::CtrlShortcut> shortcuts);
+    void OnShow(std::vector<ce30_pcviz::CtrlShortcut> shortcuts);
 protected:
-  void SetButtonGridLayout(QGridLayout* layout);
+    void SetButtonGridLayout(QGridLayout* layout);
 private:
-  std::vector<CtrlShortcut> ctrl_shortcut_map_;
-  QGridLayout* button_grid_layout_;
-  std::vector<QWidget*> appended_widgets_;
+    std::vector<CtrlShortcut> ctrl_shortcut_map_;
+    QGridLayout* button_grid_layout_;
+    std::vector<QWidget*> appended_widgets_;
 };
 } // namespace ce30_pcviz
 

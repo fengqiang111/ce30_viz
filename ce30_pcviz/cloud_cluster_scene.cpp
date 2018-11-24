@@ -35,7 +35,7 @@ void CloudClusterScene::Update()
     CloudScene::Update();
 }
 
-/**
+/**点云聚类
   *@param cloud_rgb: 一帧点云数据，类型pcl::PointCloud<pcl::PointXYZRGB>
   *@return none
   */
