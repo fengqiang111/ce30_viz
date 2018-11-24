@@ -1,6 +1,6 @@
 #ifndef CLOUD_CLUSTER_SCENE_H
 #define CLOUD_CLUSTER_SCENE_H
-
+#include <pcl/PointIndices.h>
 #include "cloud_scene.h"
 #include "export.h"
 
@@ -13,7 +13,11 @@ public:
         std::shared_ptr<pcl::visualization::PCLVisualizer> visualizer);
     virtual ~CloudClusterScene();
     virtual void Update();
-    void DrawClusterFrame(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud);
+    void DrawClusterFrame(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud_rgb,
+                          std::vector<pcl::PointIndices>& cluster_indices);
+    void DBSCAN(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud_rgb,
+                std::vector<pcl::PointIndices>& cluster_indices);
+
 protected:
     void AddCubicFrame(const float x_min, const float x_max,
                        const float y_min, const float y_max,

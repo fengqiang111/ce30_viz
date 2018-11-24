@@ -27,10 +27,8 @@ PointCloudViewer::PointCloudViewer()
     channel_type_widgets_.reset(new ChannelTypeWidgets(control_panel_->Widget()));
     control_panel_->AppendWidgets(channel_type_widgets_->GetAllWidgets());
 #endif
-    connect(
-        this, SIGNAL(ShowControlPanel(std::vector<ce30_pcviz::CtrlShortcut>)),
-        control_panel_.get(),
-        SLOT(OnShow(std::vector<ce30_pcviz::CtrlShortcut>)));
+    connect(this, SIGNAL(ShowControlPanel(std::vector<ce30_pcviz::CtrlShortcut>)),
+            control_panel_.get(), SLOT(OnShow(std::vector<ce30_pcviz::CtrlShortcut>)));
 }
 
 PointCloudViewer::~PointCloudViewer()
@@ -140,8 +138,7 @@ void PointCloudViewer::timerEvent(QTimerEvent *event)
 
     if (scan.Ready())
     {
-        UpdatePointCloudDisplay(
-            scan, *pcviz_, vertical_stretch_mode_, save_pcd_);
+        UpdatePointCloudDisplay(scan, *pcviz_, vertical_stretch_mode_, save_pcd_);
     }
     if (grey_scan.Ready())
     {
@@ -156,11 +153,8 @@ void PointCloudViewer::timerEvent(QTimerEvent *event)
   * @param save_pcd: true-保存点云数据
   * @return none
   */
-void PointCloudViewer::UpdatePointCloudDisplay(
-    const Scan &scan,
-    PointCloudViz &viz,
-    const bool& vsmode,
-    const bool& save_pcd)
+void PointCloudViewer::UpdatePointCloudDisplay(const Scan &scan, PointCloudViz &viz,
+                                               const bool& vsmode, const bool& save_pcd)
 {
     ce30_pcviz::PointCloud cloud;
     cloud.Reserve(scan.Width() * scan.Height());
@@ -179,6 +173,7 @@ void PointCloudViewer::UpdatePointCloudDisplay(
                 continue;
             }
 #endif
+            /* 生成欧氏坐标 */
             ce30_driver::Point p = channel.point();
             if (vsmode)
             {

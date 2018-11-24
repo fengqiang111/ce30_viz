@@ -83,9 +83,9 @@ bool PointCloudViz::Closed()
     return viz_->wasStopped();
 }
 
-/** 更新点云显示
-  *
-  *
+/** 更新点云显示，如果打开了聚类开关则更新边界框
+  *@point_cloud:ce30_pcviz::PointCloud
+  *@return none
   */
 void PointCloudViz::UpdatePointCloud(const PointCloud &point_cloud)
 {
@@ -94,6 +94,8 @@ void PointCloudViz::UpdatePointCloud(const PointCloud &point_cloud)
         new pcl::PointCloud<pcl::PointXYZRGB>(point_cloud.pcl_pointcloud()));
 
     PointCloudColorHandlerRGBField<pcl::PointXYZRGB> rgb(point_cloud_ptr);
+
+    // 聚类开关
     if (cloud_cluster_scene_)
     {
         cloud_cluster_scene_->SetCloud(point_cloud_ptr);
@@ -107,6 +109,7 @@ void PointCloudViz::UpdatePointCloud(const PointCloud &point_cloud)
     }
 
     viz_->updatePointCloud<pcl::PointXYZRGB>(point_cloud_ptr, rgb);
+    //viz_->setShowFPS(true);
 
     SpinOnce();
 }
