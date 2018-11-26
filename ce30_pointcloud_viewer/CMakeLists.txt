@@ -1,6 +1,7 @@
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
+set(SUPPORT_CHANNEL_TYPE_FEATURE ON)
 
 find_package(Qt5Widgets)
 find_package(Qt5Core)

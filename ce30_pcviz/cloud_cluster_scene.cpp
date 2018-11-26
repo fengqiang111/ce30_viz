@@ -39,45 +39,125 @@ CloudClusterScene::~CloudClusterScene() {}
   */
 void CloudClusterScene::Update()
 {
-    std::vector<pcl::PointIndices> cluster_indices;
+    std::vector<pcl::PointIndices> cluster_indices_near;
+    std::vector<pcl::PointIndices> cluster_indices_far;
+    int n_points_near = 0;
+    int n_points_far = 0;
+    float eps_near = 0.05;
+    float eps_far = 0.30;
+    int min_sample_size_near = 40;
+    int min_sample_size_far = 20;
 
     auto cloud = GetCloud();
     if (cloud)
     {
-        DBSCAN(cloud, cluster_indices);
-        DrawClusterFrame(cloud, cluster_indices);
+        /* 分为近距离与远距离两类 */
+        pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_near(new pcl::PointCloud<pcl::PointXYZ>);
+        pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_far(new pcl::PointCloud<pcl::PointXYZ>);
+        for (auto& point : *cloud)
+        {
+            if (point.x <= 5.0)
+            {
+                n_points_near++;
+                cloud_near->push_back({point.x, point.y, point.z});
+            }
+            else
+            {
+                n_points_far++;
+                cloud_far->push_back({point.x, point.y, point.z});
+            }
+        }
+
+        ClearAllCubicFrames();
+        cloud->clear();
+
+        if (n_points_near != 0)
+        {
+            int r = 255;
+            int g = 255;
+            int b = 255;
+            DBSCAN(cloud_near, cluster_indices_near, eps_near, min_sample_size_near);
+            DrawClusterFrame(cloud_near, cluster_indices_near);
+            for (std::vector<pcl::PointIndices>::const_iterator it = cluster_indices_near.begin();
+                 it != cluster_indices_near.end(); ++it)
+            {
+                for (std::vector<int>::const_iterator pit = it->indices.begin();
+                     pit != it->indices.end(); ++pit)
+                {
+                    auto point = cloud_near->points[*pit];
+                    pcl::PointXYZRGB pointXYZRGB;
+                    pointXYZRGB.x = point.x;
+                    pointXYZRGB.y = point.y;
+                    pointXYZRGB.z = point.z;
+                    pointXYZRGB.r = r;
+                    pointXYZRGB.g = g;
+                    pointXYZRGB.b = b;
+                    cloud->push_back(pointXYZRGB);
+
+                }
+            }
+        }
+
+        if (n_points_far != 0)
+        {
+            int r = 255;
+            int g = 255;
+            int b = 255;
+            DBSCAN(cloud_far, cluster_indices_far, eps_far, min_sample_size_far);
+            DrawClusterFrame(cloud_far, cluster_indices_far);
+            for (std::vector<pcl::PointIndices>::const_iterator it = cluster_indices_far.begin();
+                 it != cluster_indices_far.end(); ++it)
+            {
+                for (std::vector<int>::const_iterator pit = it->indices.begin();
+                     pit != it->indices.end(); ++pit)
+                {
+                    auto point = cloud_far->points[*pit];
+                    pcl::PointXYZRGB pointXYZRGB;
+                    pointXYZRGB.x = point.x;
+                    pointXYZRGB.y = point.y;
+                    pointXYZRGB.z = point.z;
+                    pointXYZRGB.r = r;
+                    pointXYZRGB.g = g;
+                    pointXYZRGB.b = b;
+                    cloud->push_back(pointXYZRGB);
+                }
+            }
+        }
     }
     CloudScene::Update();
 }
 
 /**DBSCAN点云聚类，使用欧氏距离提取点云
-  *@param cloud_rgb: 输入一帧点云数据，类型pcl::PointCloud<pcl::PointXYZRGB>::Ptr
+  *@param cloud_rgb: 输入一帧点云数据，类型pcl::PointCloud<pcl::PointXYZ>::Ptr
   *@param cluster_indices: 输出聚类结果，类型std::vector<pcl::PointIndices>
+  *@param eps: 搜索半径
+  *@param min_sample_size: 分类点云最小数量
   *@return none
   */
-void CloudClusterScene::DBSCAN(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud_rgb,
-                               std::vector<pcl::PointIndices>& cluster_indices)
+void CloudClusterScene::DBSCAN(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
+                               std::vector<pcl::PointIndices>& cluster_indices,
+                               float eps, int min_samples_size)
 {
-    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
-    cloud->reserve(cloud_rgb->size());
-    for (auto& rgb : *cloud_rgb)
-    {
-        cloud->push_back({rgb.x, rgb.y, rgb.z});
-    }
+    //pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
+    //cloud->reserve(cloud_rgb->size());
+    //for (auto& rgb : *cloud_rgb)
+    //{
+    //    cloud->push_back({rgb.x, rgb.y, rgb.z});
+    //}
     //auto cloud_filtered = cloud;
+
     if (cloud->empty())
     {
         return;
     }
-
     // Creating the KdTree object for the search method of the extraction
     pcl::search::KdTree<pcl::PointXYZ>::Ptr tree (new pcl::search::KdTree<pcl::PointXYZ>);
     tree->setInputCloud (cloud);
 
     //std::vector<pcl::PointIndices> cluster_indices;
     pcl::EuclideanClusterExtraction<pcl::PointXYZ> ec;
-    ec.setClusterTolerance (0.4);
-    ec.setMinClusterSize (10);
+    ec.setClusterTolerance (eps);
+    ec.setMinClusterSize (min_samples_size);
     ec.setMaxClusterSize (6400);
     ec.setSearchMethod (tree);
     ec.setInputCloud (cloud);
@@ -89,13 +169,13 @@ void CloudClusterScene::DBSCAN(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud_rgb,
   *@param cluster_indices: 输入聚类结果，类型std::vector<pcl::PointIndices>
   *@return none
   */
-void CloudClusterScene::DrawClusterFrame(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud_rgb,
+void CloudClusterScene::DrawClusterFrame(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
                                          std::vector<pcl::PointIndices>& cluster_indices)
 {
-    if (!cluster_indices.empty())
-    {
-        ClearAllCubicFrames();
-    }
+    //if (!cluster_indices.empty())
+    //{
+    //    ClearAllCubicFrames();
+    //}
 
     for (std::vector<pcl::PointIndices>::const_iterator it = cluster_indices.begin (); it != cluster_indices.end (); ++it)
     {
@@ -111,7 +191,7 @@ void CloudClusterScene::DrawClusterFrame(pcl::PointCloud<pcl::PointXYZRGB>::Ptr 
         // 更新边界框的最大值(x,y,z)和最小值(x,y,z)
         for (std::vector<int>::const_iterator pit = it->indices.begin (); pit != it->indices.end (); ++pit)
         {
-            auto point = cloud_rgb->points[*pit];
+            auto point = cloud->points[*pit];
 
             if (x_min > point.x)
                 x_min = point.x;

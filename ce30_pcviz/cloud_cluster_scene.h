@@ -13,10 +13,11 @@ public:
         std::shared_ptr<pcl::visualization::PCLVisualizer> visualizer);
     virtual ~CloudClusterScene();
     virtual void Update();
-    void DrawClusterFrame(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud_rgb,
+    void DrawClusterFrame(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
                           std::vector<pcl::PointIndices>& cluster_indices);
-    void DBSCAN(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud_rgb,
-                std::vector<pcl::PointIndices>& cluster_indices);
+    void DBSCAN(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
+                std::vector<pcl::PointIndices>& cluster_indices,
+                float eps, int min_samples_size);
 
 protected:
     void AddCubicFrame(const float x_min, const float x_max,
