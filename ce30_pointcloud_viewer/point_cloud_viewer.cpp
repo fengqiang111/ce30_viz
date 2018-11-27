@@ -99,8 +99,8 @@ void PointCloudViewer::timerEvent(QTimerEvent *event)
         }
         if (!thread_)
         {
-            thread_.reset(
-                new std::thread(bind(&PointCloudViewer::PacketReceiveThread, this)));
+            thread_.reset(new std::thread(bind(&PointCloudViewer::PacketReceiveThread,
+                                               this)));
         }
     }
     if (!pcviz_)
