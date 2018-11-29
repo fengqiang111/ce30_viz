@@ -15,7 +15,7 @@ using namespace ce30_pcviz;
 using namespace ce30_driver;
 
 PointCloudViewer::PointCloudViewer()
-    : vertical_stretch_mode_(true),
+    : vertical_stretch_mode_(false),
       save_pcd_(false),
       use_filter_(false),
       kill_signal_(false)
@@ -156,6 +156,11 @@ void PointCloudViewer::timerEvent(QTimerEvent *event)
 void PointCloudViewer::UpdatePointCloudDisplay(const Scan &scan, PointCloudViz &viz,
                                                const bool& vsmode, const bool& save_pcd)
 {
+#ifdef SUPPORT_CE30_ALG
+    ce30_driver::PointCloud point_cloud;
+    cluster cluster_mgr;
+    vector<int> labels;
+#endif
     ce30_pcviz::PointCloud cloud;
     cloud.Reserve(scan.Width() * scan.Height());
 
@@ -183,10 +188,26 @@ void PointCloudViewer::UpdatePointCloudDisplay(const Scan &scan, PointCloudViz &
             {
                 continue;
             }
+#ifdef SUPPORT_CE30_ALG
+            point_cloud.points.push_back(p);
+#else
             cloud.push_back(ce30_pcviz::Point(p.x, p.y, p.z));
+#endif
         }
     }
 
+#ifdef SUPPORT_CE30_ALG
+    cout << "oringinal points number = " << point_cloud.points.size() << endl;
+    cluster_mgr.DBSCAN_kdtree_2steps(0.05, 40, 0.30, 20, point_cloud, labels);
+    cout << "after processing points number = " << labels.size() << endl;
+    for (int i = 0; i < labels.size(); ++i)
+    {
+        cloud.push_back(ce30_pcviz::Point(point_cloud.points[i].x,
+                                          point_cloud.points[i].y,
+                                          point_cloud.points[i].z));
+    }
+
+#endif
     /* 更新点云显示 */
     viz.UpdatePointCloud(cloud);
 

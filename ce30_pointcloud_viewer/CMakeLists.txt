@@ -2,6 +2,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(SUPPORT_CHANNEL_TYPE_FEATURE ON)
+#set(SUPPORT_CE30_ALG ON)
 
 find_package(Qt5Widgets)
 find_package(Qt5Core)
@@ -25,6 +26,10 @@ endif()
 
 if (SUPPORT_CHANNEL_TYPE_FEATURE)
   add_definitions(-DSUPPORT_CHANNEL_TYPE_FEATURE)
+endif()
+
+if (SUPPORT_CE30_ALG)
+  add_definitions(-DSUPPORT_CE30_ALG)
 endif()
 
 if(CES_SPECIAL)

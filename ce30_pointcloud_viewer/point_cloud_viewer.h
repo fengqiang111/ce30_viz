@@ -13,6 +13,10 @@
 #include <ce30_pcviz/control_panel_widget.h>
 #include <ce30_driver/channel_type_widgets.h>
 
+#ifdef SUPPORT_CE30_ALG
+#include <ce30_driver/cluster.h>
+#endif
+
 #ifdef CES_SPECIAL
 #include "ces_special/ces_static_scene.h"
 #endif
