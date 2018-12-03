@@ -76,9 +76,16 @@ void CloudClusterScene::Update()
             int r = 255;
             int g = 255;
             int b = 255;
-            DBSCAN(cloud_near, cluster_indices_near, eps_near, min_sample_size_near);
+#ifdef CLUSTER_MODE_OCTREE
+            DBSCAN_octree(cloud_near, cluster_indices_near,
+                          eps_near, min_sample_size_near);
+#else
+            DBSCAN_kdtree(cloud_near, cluster_indices_near,
+                          eps_near, min_sample_size_near);
+#endif
             DrawClusterFrame(cloud_near, cluster_indices_near);
-            for (std::vector<pcl::PointIndices>::const_iterator it = cluster_indices_near.begin();
+            for (std::vector<pcl::PointIndices>::const_iterator it =
+                                                 cluster_indices_near.begin();
                  it != cluster_indices_near.end(); ++it)
             {
                 for (std::vector<int>::const_iterator pit = it->indices.begin();
@@ -103,9 +110,16 @@ void CloudClusterScene::Update()
             int r = 255;
             int g = 255;
             int b = 255;
-            DBSCAN(cloud_far, cluster_indices_far, eps_far, min_sample_size_far);
+#ifdef CLUSTER_MODE_OCTREE
+            DBSCAN_octree(cloud_far, cluster_indices_far,
+                          eps_far, min_sample_size_far);
+#else
+            DBSCAN_kdtree(cloud_far, cluster_indices_far,
+                          eps_far, min_sample_size_far);
+#endif
             DrawClusterFrame(cloud_far, cluster_indices_far);
-            for (std::vector<pcl::PointIndices>::const_iterator it = cluster_indices_far.begin();
+            for (std::vector<pcl::PointIndices>::const_iterator it =
+                                                 cluster_indices_far.begin();
                  it != cluster_indices_far.end(); ++it)
             {
                 for (std::vector<int>::const_iterator pit = it->indices.begin();
@@ -134,9 +148,9 @@ void CloudClusterScene::Update()
   *@param min_sample_size: 分类点云最小数量
   *@return none
   */
-void CloudClusterScene::DBSCAN(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
-                               std::vector<pcl::PointIndices>& cluster_indices,
-                               float eps, int min_samples_size)
+void CloudClusterScene::DBSCAN_kdtree(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
+                                      std::vector<pcl::PointIndices>& cluster_indices,
+                                      float eps, int min_samples_size)
 {
     //pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
     //cloud->reserve(cloud_rgb->size());
@@ -163,6 +177,44 @@ void CloudClusterScene::DBSCAN(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
     ec.setInputCloud (cloud);
     ec.extract (cluster_indices);
 }
+
+/**DBSCAN点云聚类，使用欧氏距离提取点云
+  *@param cloud_rgb: 输入一帧点云数据，类型pcl::PointCloud<pcl::PointXYZ>::Ptr
+  *@param cluster_indices: 输出聚类结果，类型std::vector<pcl::PointIndices>
+  *@param eps: 搜索半径
+  *@param min_sample_size: 分类点云最小数量
+  *@return none
+  */
+void CloudClusterScene::DBSCAN_octree(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
+                                      std::vector<pcl::PointIndices>& cluster_indices,
+                                      float eps, int min_samples_size)
+{
+    //pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
+    //cloud->reserve(cloud_rgb->size());
+    //for (auto& rgb : *cloud_rgb)
+    //{
+    //    cloud->push_back({rgb.x, rgb.y, rgb.z});
+    //}
+    //auto cloud_filtered = cloud;
+
+    if (cloud->empty())
+    {
+        return;
+    }
+    // Creating the KdTree object for the search method of the extraction
+    pcl::search::KdTree<pcl::PointXYZ>::Ptr tree(new pcl::search::KdTree<pcl::PointXYZ>(eps));
+    tree->setInputCloud (cloud);
+
+    //std::vector<pcl::PointIndices> cluster_indices;
+    pcl::EuclideanClusterExtraction<pcl::PointXYZ> ec;
+    ec.setClusterTolerance (eps);
+    ec.setMinClusterSize (min_samples_size);
+    ec.setMaxClusterSize (6400);
+    ec.setSearchMethod (tree);
+    ec.setInputCloud (cloud);
+    ec.extract (cluster_indices);
+}
+
 
 /**根据聚类结果更新边界框
   *@param cloud_rgb: 输入一帧点云数据，类型pcl::PointCloud<pcl::PointXYZRGB>::Ptr

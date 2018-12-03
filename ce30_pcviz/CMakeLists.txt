@@ -4,6 +4,8 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 
+#add_definitions(-DCLUSTER_MODE_OCTREE)
+
 find_package(Qt5Widgets)
 
 add_library(

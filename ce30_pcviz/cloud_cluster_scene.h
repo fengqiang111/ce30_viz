@@ -15,9 +15,12 @@ public:
     virtual void Update();
     void DrawClusterFrame(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
                           std::vector<pcl::PointIndices>& cluster_indices);
-    void DBSCAN(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
-                std::vector<pcl::PointIndices>& cluster_indices,
-                float eps, int min_samples_size);
+    void DBSCAN_kdtree(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
+                       std::vector<pcl::PointIndices>& cluster_indices,
+                       float eps, int min_samples_size);
+    void DBSCAN_octree(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
+                       std::vector<pcl::PointIndices>& cluster_indices,
+                       float eps, int min_samples_size);
 
 protected:
     void AddCubicFrame(const float x_min, const float x_max,

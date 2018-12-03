@@ -198,7 +198,7 @@ void PointCloudViewer::UpdatePointCloudDisplay(const Scan &scan, PointCloudViz &
 
 #ifdef SUPPORT_CE30_ALG
     cout << "oringinal points number = " << point_cloud.points.size() << endl;
-    cluster_mgr.DBSCAN_kdtree_2steps(0.05, 40, 0.30, 20, point_cloud, labels);
+    cluster_mgr.DBSCAN_2steps(CLUSTER_KD_TREE, 0.05, 40, 0.30, 20, point_cloud, labels);
     cout << "after processing points number = " << labels.size() << endl;
     for (int i = 0; i < labels.size(); ++i)
     {
