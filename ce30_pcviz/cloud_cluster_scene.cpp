@@ -73,9 +73,10 @@ void CloudClusterScene::Update()
 
         if (n_points_near != 0)
         {
-            int r = 255;
-            int g = 255;
-            int b = 255;
+            int r[] = {255,   0,   0,   0, 255,   0,   0, 128, 128, 128};
+            int g[] = {255, 255, 255,   0, 255, 128, 128, 128,   0, 128};
+            int b[] = {  0,   0, 255, 255, 255, 128,   0,   0,   0, 128};
+            int step = 0;
 #ifdef CLUSTER_MODE_OCTREE
             DBSCAN_octree(cloud_near, cluster_indices_near,
                           eps_near, min_sample_size_near);
@@ -96,20 +97,22 @@ void CloudClusterScene::Update()
                     pointXYZRGB.x = point.x;
                     pointXYZRGB.y = point.y;
                     pointXYZRGB.z = point.z;
-                    pointXYZRGB.r = r;
-                    pointXYZRGB.g = g;
-                    pointXYZRGB.b = b;
+                    pointXYZRGB.r = r[step];
+                    pointXYZRGB.g = g[step];
+                    pointXYZRGB.b = b[step];
                     cloud->push_back(pointXYZRGB);
 
                 }
+                step++;
             }
         }
 
         if (n_points_far != 0)
         {
-            int r = 255;
-            int g = 255;
-            int b = 255;
+            int r[] = {255,   0,   0,   0, 255,   0,   0, 128, 128, 128};
+            int g[] = {255, 255, 255,   0, 255, 128, 128, 128,   0, 128};
+            int b[] = {  0,   0, 255, 255, 255, 128,   0,   0,   0, 128};
+            int step = 0;
 #ifdef CLUSTER_MODE_OCTREE
             DBSCAN_octree(cloud_far, cluster_indices_far,
                           eps_far, min_sample_size_far);
@@ -130,11 +133,12 @@ void CloudClusterScene::Update()
                     pointXYZRGB.x = point.x;
                     pointXYZRGB.y = point.y;
                     pointXYZRGB.z = point.z;
-                    pointXYZRGB.r = r;
-                    pointXYZRGB.g = g;
-                    pointXYZRGB.b = b;
+                    pointXYZRGB.r = r[step];
+                    pointXYZRGB.g = g[step];
+                    pointXYZRGB.b = b[step];
                     cloud->push_back(pointXYZRGB);
                 }
+                step++;
             }
         }
     }
