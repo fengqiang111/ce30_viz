@@ -103,7 +103,7 @@ void CloudClusterScene::Update()
                     cloud->push_back(pointXYZRGB);
 
                 }
-                step++;
+                step = (step + 1) % (sizeof(r) / sizeof(r[0]));
             }
         }
 
@@ -138,7 +138,7 @@ void CloudClusterScene::Update()
                     pointXYZRGB.b = b[step];
                     cloud->push_back(pointXYZRGB);
                 }
-                step++;
+                step = (step + 1) % (sizeof(r) / sizeof(r[0]));
             }
         }
     }
