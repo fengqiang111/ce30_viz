@@ -184,7 +184,7 @@ void PointCloudViewer::UpdatePointCloudDisplay(const Scan &scan, PointCloudViz &
             {
                 p.z = (scan.Height() - y) * 0.1f;
             }
-            if (sqrt(p.x * p.x + p.y * p.y) < 0.1f)
+            if (sqrt(p.x * p.x + p.y * p.y) < 0.30f)
             {
                 continue;
             }

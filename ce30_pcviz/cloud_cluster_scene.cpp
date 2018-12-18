@@ -43,10 +43,10 @@ void CloudClusterScene::Update()
     std::vector<pcl::PointIndices> cluster_indices_far;
     int n_points_near = 0;
     int n_points_far = 0;
-    float eps_near = 0.05;
-    float eps_far = 0.30;
-    int min_sample_size_near = 40;
-    int min_sample_size_far = 20;
+    float eps_near = 0.01375;
+    float eps_far = 0.055;
+    int min_sample_size_near = 30;
+    int min_sample_size_far = 30;
 
     auto cloud = GetCloud();
     if (cloud)
@@ -56,7 +56,7 @@ void CloudClusterScene::Update()
         pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_far(new pcl::PointCloud<pcl::PointXYZ>);
         for (auto& point : *cloud)
         {
-            if (point.x <= 5.0)
+            if (point.x <= 0.6)
             {
                 n_points_near++;
                 cloud_near->push_back({point.x, point.y, point.z});
