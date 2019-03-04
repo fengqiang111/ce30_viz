@@ -32,4 +32,4 @@ The `ce30_viz` provides a set of tools to visualize CE30-D measurement data. All
 #### Quick Access
 
 - [Official Website](http://www.benewake.com/en/index.html)
-- [ce30_driver](https://codincodee.github.io/ce30_driver)
+- [ce30_driver](https://github.com/fengqiang111/ce30_driver/tree/develop)
