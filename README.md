@@ -27,7 +27,7 @@ The `ce30_viz` provides a set of tools to visualize CE30-D measurement data. All
 
 #### Download
 
-- [Point Cloud Viewer for Windows](https://github.com/codincodee/ce30_viz/releases/download/v1.10.0/ce30_pointcloud_viewer_v1_10_0_win10_x86_64.zip)
+- [Point Cloud Viewer for Windows](https://github.com/fengqiang111/ce30_viz/releases/download/CE30DViz.STD.02.00.00/ce30_pointcloud_viewer_v2_0_0_win10_x86_64.rar)
 
 #### Quick Access
 
